@@ -45,19 +45,25 @@ const Index = () => {
       const bpmAdjustment = 4 / bpm; // Scale durations based on BPM
       const duration = currentStep.duration * bpmAdjustment * 1000;
 
-      // Play sound based on phase
-      switch (currentStep.phase) {
-        case 'inhale':
-          playInhale();
-          break;
-        case 'hold':
-          playHold();
-          break;
-        case 'exhale':
-          playExhale();
-          break;
-      }
+      // Play sound at the start of each phase
+      const playSound = () => {
+        switch (currentStep.phase) {
+          case 'inhale':
+            playInhale();
+            break;
+          case 'hold':
+            playHold();
+            break;
+          case 'exhale':
+            playExhale();
+            break;
+        }
+      };
 
+      // Play sound immediately when phase starts
+      playSound();
+
+      // Set up timer for next phase
       timer = setTimeout(() => {
         setStepIndex((prev) => (prev + 1) % currentPattern.steps.length);
       }, duration);
@@ -91,6 +97,9 @@ const Index = () => {
 
   const handlePlayPause = () => {
     setIsPlaying(!isPlaying);
+    if (!isPlaying) {
+      setStepIndex(0); // Reset to beginning of pattern when starting
+    }
   };
 
   const handleSettings = () => {
