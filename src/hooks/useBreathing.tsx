@@ -80,6 +80,15 @@ export const useBreathing = () => {
     });
   };
 
+  const handleReset = () => {
+    setIsPlaying(false);
+    setStepIndex(0);
+    toast({
+      title: "Exercise Reset",
+      description: "Timer and breathing cycle have been reset",
+    });
+  };
+
   return {
     isPlaying,
     currentPattern,
@@ -88,6 +97,7 @@ export const useBreathing = () => {
     selectedPatternId,
     handlePlayPause,
     handlePatternChange,
-    handleBpmChange
+    handleBpmChange,
+    handleReset
   };
 };

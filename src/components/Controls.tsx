@@ -1,14 +1,15 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Play, Pause, Settings } from 'lucide-react';
+import { Play, Pause, Settings, RotateCcw } from 'lucide-react';
 
 interface ControlsProps {
   isPlaying: boolean;
   onPlayPause: () => void;
   onSettings: () => void;
+  onReset: () => void;
 }
 
-const Controls: React.FC<ControlsProps> = ({ isPlaying, onPlayPause, onSettings }) => {
+const Controls: React.FC<ControlsProps> = ({ isPlaying, onPlayPause, onSettings, onReset }) => {
   return (
     <div className="flex gap-4 mt-8">
       <Button
@@ -23,6 +24,13 @@ const Controls: React.FC<ControlsProps> = ({ isPlaying, onPlayPause, onSettings 
         className="w-16 h-16 rounded-full border-2 border-primary"
       >
         <Settings className="h-6 w-6" />
+      </Button>
+      <Button
+        onClick={onReset}
+        variant="outline"
+        className="w-16 h-16 rounded-full border-2 border-primary"
+      >
+        <RotateCcw className="h-6 w-6" />
       </Button>
     </div>
   );

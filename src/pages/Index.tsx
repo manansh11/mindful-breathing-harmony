@@ -17,7 +17,8 @@ const Index = () => {
     selectedPatternId,
     handlePlayPause,
     handlePatternChange,
-    handleBpmChange
+    handleBpmChange,
+    handleReset
   } = useBreathing();
 
   const { minutes, seconds } = useBreathingTimer(isPlaying);
@@ -52,6 +53,7 @@ const Index = () => {
         isPlaying={isPlaying}
         onPlayPause={handlePlayPause}
         onSettings={handleSettings}
+        onReset={handleReset}
       />
     </div>
   );

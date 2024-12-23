@@ -5,19 +5,23 @@ export const useBreathingTimer = (isPlaying: boolean) => {
   const [seconds, setSeconds] = useState(0);
 
   useEffect(() => {
+    if (!isPlaying) {
+      setMinutes(0);
+      setSeconds(0);
+      return;
+    }
+
     let interval: NodeJS.Timeout;
     
-    if (isPlaying) {
-      interval = setInterval(() => {
-        setSeconds(prev => {
-          if (prev === 59) {
-            setMinutes(m => m + 1);
-            return 0;
-          }
-          return prev + 1;
-        });
-      }, 1000);
-    }
+    interval = setInterval(() => {
+      setSeconds(prev => {
+        if (prev === 59) {
+          setMinutes(m => m + 1);
+          return 0;
+        }
+        return prev + 1;
+      });
+    }, 1000);
 
     return () => {
       if (interval) clearInterval(interval);
