@@ -4,6 +4,9 @@ export const useSound = (url: string) => {
   const audio = useRef(new Audio(url));
 
   useEffect(() => {
+    // Set a lower volume for gentler sounds
+    audio.current.volume = 0.3;
+    
     return () => {
       audio.current.pause();
     };
