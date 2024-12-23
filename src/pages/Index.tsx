@@ -5,6 +5,7 @@ import Timer from '@/components/Timer';
 import Settings from '@/components/Settings';
 import { breathingPatterns, type BreathingPattern } from '@/config/breathingPatterns';
 import { useToast } from '@/components/ui/use-toast';
+import { useSound } from '@/utils/audio';
 
 const Index = () => {
   const { toast } = useToast();
@@ -15,6 +16,12 @@ const Index = () => {
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
   const [showSettings, setShowSettings] = useState(false);
+  const [bpm, setBpm] = useState(4);
+
+  // Sound effects
+  const playInhale = useSound('/sounds/inhale.mp3');
+  const playHold = useSound('/sounds/hold.mp3');
+  const playExhale = useSound('/sounds/exhale.mp3');
 
   // Update current pattern when selection changes
   useEffect(() => {
@@ -29,21 +36,37 @@ const Index = () => {
     }
   }, [selectedPatternId, toast]);
 
-  // Handle breathing cycle
+  // Handle breathing cycle with BPM adjustment
   useEffect(() => {
     let timer: NodeJS.Timeout;
     
     if (isPlaying) {
       const currentStep = currentPattern.steps[stepIndex];
+      const bpmAdjustment = 4 / bpm; // Scale durations based on BPM
+      const duration = currentStep.duration * bpmAdjustment * 1000;
+
+      // Play sound based on phase
+      switch (currentStep.phase) {
+        case 'inhale':
+          playInhale();
+          break;
+        case 'hold':
+          playHold();
+          break;
+        case 'exhale':
+          playExhale();
+          break;
+      }
+
       timer = setTimeout(() => {
         setStepIndex((prev) => (prev + 1) % currentPattern.steps.length);
-      }, currentStep.duration * 1000);
+      }, duration);
     }
 
     return () => {
       if (timer) clearTimeout(timer);
     };
-  }, [isPlaying, stepIndex, currentPattern]);
+  }, [isPlaying, stepIndex, currentPattern, bpm, playInhale, playHold, playExhale]);
 
   // Handle timer
   useEffect(() => {
@@ -78,6 +101,14 @@ const Index = () => {
     setSelectedPatternId(patternId);
   };
 
+  const handleBpmChange = (value: number) => {
+    setBpm(value);
+    toast({
+      title: "BPM Updated",
+      description: `Breathing rate set to ${value} breaths per minute`,
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-accent to-white flex flex-col items-center justify-center p-4">
       <h1 className="text-3xl font-bold text-primary mb-8">Breathwork</h1>
@@ -94,6 +125,8 @@ const Index = () => {
           <Settings
             selectedPatternId={selectedPatternId}
             onPatternChange={handlePatternChange}
+            bpm={bpm}
+            onBpmChange={handleBpmChange}
           />
         </div>
       )}
